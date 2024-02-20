@@ -18,6 +18,7 @@ const initApiRoutes = (app) => {
     router.post("/getDoctorScheduleByDate", doctorsController.getDoctorScheduleByDate);
     router.post("/updateBooking", bookingController.updateBooking);
     router.get("/getDoctorByClinic/:id", doctorsController.getDoctorByClinic);
+    router.get("/getAllClinicsPagination/page=:page&queryString=:queryString?&idCity=:idCity?", clinicController.getAllClinicsPagination);
 
     return app.use("/", router);
 }

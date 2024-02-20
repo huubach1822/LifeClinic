@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     Date: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     ID_doctor: {

@@ -3,8 +3,10 @@ var _account = require("./account");
 var _account_type = require("./account_type");
 var _blog = require("./blog");
 var _booking = require("./booking");
+var _city = require("./city");
 var _clinic = require("./clinic");
 var _clinic_image = require("./clinic_image");
+var _degree = require("./degree");
 var _doctor = require("./doctor");
 var _healthcare_package = require("./healthcare_package");
 var _healthcare_type = require("./healthcare_type");
@@ -18,8 +20,10 @@ function initModels(sequelize) {
   var account_type = _account_type(sequelize, DataTypes);
   var blog = _blog(sequelize, DataTypes);
   var booking = _booking(sequelize, DataTypes);
+  var city = _city(sequelize, DataTypes);
   var clinic = _clinic(sequelize, DataTypes);
   var clinic_image = _clinic_image(sequelize, DataTypes);
+  var degree = _degree(sequelize, DataTypes);
   var doctor = _doctor(sequelize, DataTypes);
   var healthcare_package = _healthcare_package(sequelize, DataTypes);
   var healthcare_type = _healthcare_type(sequelize, DataTypes);
@@ -28,18 +32,24 @@ function initModels(sequelize) {
   var speciality = _speciality(sequelize, DataTypes);
   var time_type = _time_type(sequelize, DataTypes);
 
+  blog.belongsTo(account, { as: "ID_account_account", foreignKey: "ID_account"});
+  account.hasMany(blog, { as: "blogs", foreignKey: "ID_account"});
   doctor.belongsTo(account, { as: "ID_account", foreignKey: "ID"});
   account.hasOne(doctor, { as: "doctor", foreignKey: "ID"});
   patient.belongsTo(account, { as: "ID_account_account", foreignKey: "ID_account"});
   account.hasMany(patient, { as: "patients", foreignKey: "ID_account"});
   account.belongsTo(account_type, { as: "ID_account_type_account_type", foreignKey: "ID_account_type"});
   account_type.hasMany(account, { as: "accounts", foreignKey: "ID_account_type"});
+  clinic.belongsTo(city, { as: "ID_city_city", foreignKey: "ID_city"});
+  city.hasMany(clinic, { as: "clinics", foreignKey: "ID_city"});
   clinic_image.belongsTo(clinic, { as: "ID_clinic_clinic", foreignKey: "ID_clinic"});
   clinic.hasMany(clinic_image, { as: "clinic_images", foreignKey: "ID_clinic"});
   doctor.belongsTo(clinic, { as: "ID_clinic_clinic", foreignKey: "ID_clinic"});
   clinic.hasMany(doctor, { as: "doctors", foreignKey: "ID_clinic"});
   healthcare_package.belongsTo(clinic, { as: "ID_clinic_clinic", foreignKey: "ID_clinic"});
   clinic.hasMany(healthcare_package, { as: "healthcare_packages", foreignKey: "ID_clinic"});
+  doctor.belongsTo(degree, { as: "ID_degree_degree", foreignKey: "ID_degree"});
+  degree.hasMany(doctor, { as: "doctors", foreignKey: "ID_degree"});
   schedule.belongsTo(doctor, { as: "ID_doctor_doctor", foreignKey: "ID_doctor"});
   doctor.hasMany(schedule, { as: "schedules", foreignKey: "ID_doctor"});
   schedule.belongsTo(healthcare_package, { as: "ID_healthcare_package_healthcare_package", foreignKey: "ID_healthcare_package"});
@@ -60,8 +70,10 @@ function initModels(sequelize) {
     account_type,
     blog,
     booking,
+    city,
     clinic,
     clinic_image,
+    degree,
     doctor,
     healthcare_package,
     healthcare_type,

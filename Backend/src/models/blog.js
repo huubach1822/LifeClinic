@@ -8,11 +8,11 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     Name: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Date: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Content: {
@@ -22,6 +22,14 @@ module.exports = function(sequelize, DataTypes) {
     Image: {
       type: DataTypes.BLOB,
       allowNull: true
+    },
+    ID_account: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'account',
+        key: 'ID'
+      }
     }
   }, {
     sequelize,
@@ -34,6 +42,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "ID" },
+        ]
+      },
+      {
+        name: "ID_account",
+        using: "BTREE",
+        fields: [
+          { name: "ID_account" },
         ]
       },
     ]

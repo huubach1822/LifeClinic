@@ -41,7 +41,7 @@ const MedicalFacility = () => {
                     <div className="hc-s1-p2-description">Extensive health check-up packages at trusted medical institutions meet all the needs of the people.</div>
                     <div className="form-group has-search mt-4 mb-4">
                         <span className="form-control-feedback"><FontAwesomeIcon icon={faSearch} /></span>
-                        <input type="text" className="form-control" placeholder="Find a Healthcare Service" />
+                        <input type="text" className="form-control" placeholder="Find a Healthcare Package" />
                     </div>
                 </div>
             </div>

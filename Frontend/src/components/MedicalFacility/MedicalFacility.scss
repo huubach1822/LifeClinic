@@ -42,16 +42,21 @@
         }
 
         .has-search {
-            width: 100%;
+            width: 700px;
             position: relative;
+            border: none;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+            border-radius: 10px;
+            background-color: #FFFFFF;
 
             .form-control {
                 padding-left: 2.375rem;
-                height: 50px;
-                border-radius: 10px;
+                height: 56px;
                 padding-left: 50px;
-                border: none;
-                box-shadow: 4px 8px 30px 0 rgba(177, 196, 218, .35);
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 10px;
+                color: black;
             }
 
             .form-control-feedback {
@@ -67,6 +72,30 @@
                 top: 15%;
                 left: 1%;
             }
+
+            .placeholder-text {
+                font-size: 16px;
+                font-family: Garamond, serif;
+                font-weight: 100;
+                color: #595C5F
+            }
+
+            fieldset {
+                border: none !important;
+            }
+
+            .search-line-icon {
+                background-color: #BDBEBD;
+                width: 1px;
+                margin: 12px 0;
+            }
+
+            .MuiInputBase-root {
+                font-size: 16px;
+                font-family: Garamond, serif;
+                color: black;
+            }
+
         }
     }
 }
@@ -75,7 +104,7 @@
     background-color: #E8F2F7;
 
     .mf-s2-container {
-        max-width: 1180px !important;
+        max-width: 1200px !important;
         margin: 0 auto;
 
         .mf-s2-card {
@@ -105,6 +134,8 @@
                 line-height: 21px;
                 color: #858585;
                 margin-bottom: 12px;
+
+
             }
 
             .mf-s2-button {
@@ -133,10 +164,43 @@
         border-radius: 20px;
         text-align: center;
         font-family: Roboto, sans-serif !important;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+        padding: 0 30px;
+        position: sticky;
+        top: 145px;
+
+        .map-container {
+            height: 180px;
+            position: relative;
+
+            .mapboxgl-canvas {
+                border-radius: 10px;
+            }
+
+            .container-open-map {
+                position: absolute;
+                z-index: 98;
+                background-color: #FDFDFD;
+                top: 10px;
+                left: 10px;
+                box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+                .a-open-map {
+                    color: #6495ED;
+                    font-weight: bold;
+                    cursor: pointer;
+                    font-size: 11px;
+                }
+
+                .a-open-map:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
 
         .mf-s2-sc-img {
-            width: 200px;
-            height: 200px;
+            width: 170px;
+            height: 170px;
         }
 
         .mf-s2-sc-name {
@@ -152,14 +216,25 @@
         .mf-s2-sc-address {
             margin-top: 5px;
             font-weight: 400;
-            font-size: 16px;
+            font-size: 15px;
             line-height: 19px;
             color: rgba(0, 0, 0, .85);
         }
 
         .temp-description {
-            text-align: justify;
+            text-align: left;
             border-top: 1px solid #D8D8D8;
+            font-size: 16px;
+
+            .more-less-btn {
+                color: #1da1f2;
+            }
         }
     }
+}
+
+.css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root {
+    font-size: 14px !important;
+    font-family: Garamond, serif;
+    color: black !important;
 }

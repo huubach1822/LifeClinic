@@ -8,11 +8,7 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     Name: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    Address: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Short_Description: {
@@ -26,6 +22,26 @@ module.exports = function(sequelize, DataTypes) {
     Logo: {
       type: DataTypes.BLOB,
       allowNull: true
+    },
+    Address: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    Latitude: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    Longitude: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    ID_city: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'city',
+        key: 'ID'
+      }
     }
   }, {
     sequelize,
@@ -38,6 +54,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "ID" },
+        ]
+      },
+      {
+        name: "ID_city",
+        using: "BTREE",
+        fields: [
+          { name: "ID_city" },
         ]
       },
     ]

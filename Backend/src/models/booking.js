@@ -8,11 +8,11 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     Status: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Booking_date: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     ID_patient: {

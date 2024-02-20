@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('doctor', {
     ID: {
-      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -11,16 +10,16 @@ module.exports = function(sequelize, DataTypes) {
         key: 'ID'
       }
     },
-    Email: {
-      type: DataTypes.STRING(255),
+    Name: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    DateOfBirth: {
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Phone: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    Name: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Description: {
@@ -36,7 +35,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     Gender: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     ID_clinic: {
@@ -52,6 +51,14 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true,
       references: {
         model: 'speciality',
+        key: 'ID'
+      }
+    },
+    ID_degree: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'degree',
         key: 'ID'
       }
     }
@@ -80,6 +87,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "ID_speciality" },
+        ]
+      },
+      {
+        name: "ID_degree",
+        using: "BTREE",
+        fields: [
+          { name: "ID_degree" },
         ]
       },
     ]

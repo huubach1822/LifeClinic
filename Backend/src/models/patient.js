@@ -8,39 +8,39 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     Name: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     DateOfBirth: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Email: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    Gender: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Phone: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    Gender: {
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Address: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Health_insurance_code: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Ethnicity: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Citizen_id_number: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     ID_account: {

@@ -8,11 +8,15 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     Username: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     Password: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    Email: {
+      type: DataTypes.TEXT,
       allowNull: true
     },
     ID_account_type: {
