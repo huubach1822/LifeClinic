@@ -16,13 +16,14 @@ let getAllClinics = async () => {
 
 let getAllClinicsPagination = async (page, queryString, idCity) => {
 
-    console.log(idCity)
     const Op = Sequelize.Op;
     if (_.isEmpty(page)) page = 1;
     if (_.isEmpty(queryString)) queryString = "";
-    if (_.isEmpty(idCity)) idCity = 1;
+    if (_.isEmpty(idCity)) idCity = {
+        [Op.not]: null
+    };
 
-    let limit = 5;
+    let limit = 6;
     let offset = (limit * page) - limit;
 
     try {
@@ -48,6 +49,7 @@ let getAllClinicsPagination = async (page, queryString, idCity) => {
         code: 0,
         data
     }
+
 }
 
 module.exports = {

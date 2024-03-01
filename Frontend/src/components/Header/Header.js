@@ -6,11 +6,21 @@ import { faUser } from "@fortawesome/free-regular-svg-icons"
 import { Link } from "react-router-dom";
 import hp from '../../asset/image/Header/hp.svg'
 import { useSelector } from 'react-redux'
-
-var _ = require('lodash');
+import _ from 'lodash'
+import { useNavigate } from "react-router-dom"
 
 const Header = () => {
-    const account = useSelector(state => state.user.account)
+
+    const account = useSelector(state => state.user.account);
+    const navigate = useNavigate();
+
+    const btnAccount = () => {
+        if (_.isEmpty(account)) {
+            navigate("/login")
+        } else {
+            navigate("/account")
+        }
+    }
 
     return (
         <div className="header-page">
@@ -26,7 +36,10 @@ const Header = () => {
                             <a className="icon-header" href="https://github.com/huubach1822"><FontAwesomeIcon icon={faYoutube} />Youtube</a>
                         </div>
                         <div className="account-header">
-                            <Link to={"/login"} className="btn btn-primary acc-button"><FontAwesomeIcon icon={faUser} />{_.isEmpty(account) ? "My Account" : account.Username}</Link>
+                            <button className="btn btn-primary acc-button d-flex" onClick={() => btnAccount()}>
+                                <div><FontAwesomeIcon icon={faUser} /></div>
+                                <div className="flex-fill ps-2">{_.isEmpty(account) ? "My Account" : account.Username}</div>
+                            </button>
                         </div>
                     </div>
                     <div className="down-header">

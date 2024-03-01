@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { faAngleRight, faSearch, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import { getAllClinics } from "../../service/clinicService";
+import { getAllClinicsPagination } from "../../service/clinicService";
 import { Buffer } from 'buffer';
 import mapboxgl from 'mapbox-gl';
 import ReactReadMoreReadLess from "react-read-more-read-less";
@@ -11,61 +11,121 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import _ from "lodash"
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
+import Pagination from '@mui/material/Pagination';
+import { getAllCity } from "../../service/cityService";
+import EmptyList from "../../asset/image/EmptyList.webp"
+import CircularProgress from '@mui/material/CircularProgress';
 
 const MedicalFacility = () => {
 
+    // map
     mapboxgl.accessToken = 'pk.eyJ1IjoibW9uc3Rlcnh5ejAyIiwiYSI6ImNsZnFtMWpyeTAwbjIzcm81OHZsam14NTYifQ.wL-EZFvgPDOvrF-JFVlWsA';
     const mapContainer = useRef(null);
     const [mapObject, setMap] = useState();
+    const [marker, setMarker] = useState();
+    // data
+    const [selectedClinic, setSelectedClinic] = useState();
+    const [clinics, setClinic] = useState([])
+    const [city, setCity] = useState()
+    // pagination
+    const [totalPage, setTotalPage] = useState(1);
+    // loading
+    const [loading, setLoading] = useState(true);
+    // search and filter
+    const [queryObject, setQueryObject] = useState({
+        location: "",
+        queryString: "",
+        page: 1
+    });
 
+    // map
     const openToMap = () => {
         let lat = selectedClinic.Latitude;
         let lng = selectedClinic.Longitude;
         window.open(`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=17/${lat}/${lng}`);
     }
-
-    // call api
-    const [selectedClinic, setSelectedClinic] = useState();
-    const [clinics, setClinic] = useState()
     useEffect(() => {
+        if (!_.isEmpty(selectedClinic)) {
+            let cor = [selectedClinic.Longitude, selectedClinic.Latitude]
+            if (!_.isEmpty(marker)) {
+                marker.remove();
+            }
+            setMarker(new mapboxgl.Marker({ color: "#EA4335" }).setLngLat(cor).addTo(mapObject));
+            mapObject.setCenter(cor)
+            mapObject.once('load', () => {
+                mapObject.resize();
+            });
+        }
+        // eslint-disable-next-line
+    }, [selectedClinic])
 
-        const map = new mapboxgl.Map({
+    // first render
+    useEffect(() => {
+        const fetchCity = async () => {
+            let res = await getAllCity()
+            setCity(res.data.city)
+        }
+        fetchCity()
+        setMap(new mapboxgl.Map({
             container: mapContainer.current,
-            style: 'mapbox://styles/mapbox/streets-v12',
-            zoom: 17,
+            // style: 'mapbox://styles/mapbox/streets-v12',
+            zoom: 16,
             dragPan: false,
             scrollZoom: false,
             boxZoom: false,
             doubleClickZoom: false
-        });
-        setMap(map);
-
-        const fetchData = async () => {
-            var res = await getAllClinics()
-            var temp = res.data.clinics
-            for (let x of temp) {
-                x.Logo = Buffer.from(x.Logo.data, 'binary').toString('base64');
-            }
-            setClinic(temp)
-            setSelectedClinic(temp[0])
-        }
-        fetchData()
+        }));
+        let timerId = fetchData(queryObject)
+        return () => clearTimeout(timerId);
+        // eslint-disable-next-line
     }, []);
 
-    useEffect(() => {
-        if (!_.isEmpty(selectedClinic)) {
-            var cor = [selectedClinic.Longitude, selectedClinic.Latitude]
-            // eslint-disable-next-line
-            let marker = new mapboxgl.Marker({ color: "#EA4335" }).setLngLat(cor).addTo(mapObject);
-            mapObject?.setCenter(cor)
+    // call api
+    const fetchData = async (obj) => {
+        setLoading(true);
+        let res = await getAllClinicsPagination(obj.page, obj.queryString, obj.location)
+        let temp = res.data.data.result
+        for (let x of temp) {
+            x.Logo = Buffer.from(x.Logo.data, 'binary').toString('base64');
         }
-    }, [selectedClinic, mapObject])
+        setTotalPage(res.data.data.totalPages)
+        setClinic(temp)
+        setSelectedClinic(temp[0])
+        let timerId = setTimeout(() => {
+            setLoading(false)
+        }, 500);
+        return timerId
+    }
 
-    const [location, setLocation] = useState("");
-    const handleChange = (event) => {
-        setLocation(event.target.value);
+    // search and filter change
+    const selectChange = (event) => {
+        setQueryObject({
+            ...queryObject,
+            location: event.target.value,
+            page: 1
+        })
     };
+    const pageChange = (event, value) => {
+        if (value !== queryObject.page) {
+            setQueryObject({
+                ...queryObject,
+                page: value
+            })
+        }
+    };
+    const inputChange = (event) => {
+        setQueryObject({
+            ...queryObject,
+            queryString: event.target.value,
+            page: 1
+        })
+    }
+    useEffect(() => {
+        let timerId = fetchData(queryObject)
+        window.scrollTo(0, 0);
+        return () => clearTimeout(timerId);
+    }, [queryObject])
 
     return (
         <div>
@@ -80,26 +140,28 @@ const MedicalFacility = () => {
                     <div className="mf-s1-p2-description">Access to leading healthcare facilities will enhance your medical examination and treatment experience.</div>
                     <div className="form-group has-search mt-4 mb-4 d-flex flex-row">
                         <span className="form-control-feedback"><FontAwesomeIcon icon={faSearch} /></span>
-                        <input type="text" className="form-control" placeholder="Find a Medical Facility" />
+                        <input onChange={inputChange} type="text" className="form-control" placeholder="Find a Medical Facility" />
                         <div className="search-line-icon"></div>
                         <FormControl sx={{ width: "170px", height: "50px" }}>
                             <Select
-                                value={location}
-                                onChange={handleChange}
+                                value={queryObject.location}
+                                onChange={selectChange}
                                 displayEmpty
                                 inputProps={{ "aria-label": "Without label" }}
-                                renderValue={location !== "" ? undefined : () => <span className="placeholder-text">Location</span>}
+                                renderValue={queryObject.location !== "" ? undefined : () => <span className="placeholder-text"><FontAwesomeIcon icon={faLocationDot} className="me-2" />Location</span>}
                             >
-                                <MenuItem value={5}>All Location</MenuItem>
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Ho Chi Minh</MenuItem>
+                                <MenuItem value={""}>All Location</MenuItem>
+                                {city?.map((item, index) => {
+                                    return (
+                                        <MenuItem key={item.ID} value={item.ID}>{item.Name}</MenuItem>
+                                    )
+                                })}
                             </Select>
                         </FormControl>
                     </div>
                 </div>
             </div>
-            <div className="mf-section-2">
+            <div className="mf-section-2" style={!_.isEmpty(clinics) && !loading ? { display: "block" } : { display: "none" }}>
                 <div className="mf-s2-container">
                     <div className="container">
                         <div className="row">
@@ -145,9 +207,25 @@ const MedicalFacility = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className="mf-pagination d-flex justify-content-center pb-3">
+                            <Pagination count={totalPage} page={queryObject.page} siblingCount={2} variant="outlined" shape="rounded" onChange={pageChange} />
+                        </div>
                     </div>
                 </div>
             </div>
+            {_.isEmpty(clinics) && !loading &&
+                <>
+                    <div className="mf-section-3 d-flex justify-content-center flex-column align-items-center py-5">
+                        <div className="mf-s3-warning mb-4">We couldn’t find what you were looking for</div>
+                        <img className="mf-s3-img" alt="" src={EmptyList}></img>
+                    </div>
+                </>
+            }
+            {loading &&
+                <div className="mf-section-3 d-flex justify-content-center py-5">
+                    <CircularProgress />
+                </div>
+            }
         </div >
     )
 }

@@ -3,15 +3,16 @@ import Footer from "./components/Footer/Footer";
 import { Route, Routes, Outlet } from "react-router-dom";
 import React from "react";
 import { ToastContainer } from 'react-toastify';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import HomePage from "./components/HomePage/HomePage";
 import LoginRegisterPage from "./components/LoginRegisterPage/LoginRegisterPage";
 import MedicalFacility from "./components/MedicalFacility/MedicalFacility";
 import HealthcarePackage from "./components/HealthcarePackage/HealthcarePackage";
 import Doctor from "./components/Doctor/Doctor";
-import BookingPage from "./components/BookingPage/BookingPage"
+import BookingDoctor from "./components/BookingDoctor/BookingDoctor"
 import BookingClinic from "./components/BookingClinic/BookingClinic";
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import AccountPage from "./components/AccountPage/AccountPage";
 
 function UserPage() {
   return (
@@ -44,8 +45,9 @@ function App() {
           <Route path="/medicalFacility" element={<MedicalFacility />} />
           <Route path="/healthcareService" element={<HealthcarePackage />} />
           <Route path="/doctor" element={<Doctor />} />
-          <Route path="/doctorDetail/:id" element={<BookingPage />} />
+          <Route path="/bookingDoctor/:id" element={<BookingDoctor />} />
           <Route path="/bookingClinic/:id" element={<BookingClinic />} />
+          <Route path="/account" element={<AccountPage />} />
         </Route>
 
         <Route path="/login" element={<LoginRegisterPage />} />

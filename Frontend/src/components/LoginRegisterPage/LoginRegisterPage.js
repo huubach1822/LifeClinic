@@ -9,20 +9,23 @@ import { Link } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux"
-import { loginUser, registerUser } from "../../redux/slices/userSlice"
+import { loginRedux, registerRedux } from "../../redux/slices/userSlice"
 
 const LoginRegisterPage = () => {
 
-
+    // react router
     const navigate = useNavigate();
+    // redux
     const dispatch = useDispatch();
-
+    // login register flag
     const [flag, setFlag] = useState(1);
+    // input data
     const [input, setInput] = useState({
         username: '',
         password: '',
         confirmPassword: ''
     });
+    // input change
     const onInputChange = e => {
         const { name, value } = e.target;
         setInput(prev => ({
@@ -30,42 +33,30 @@ const LoginRegisterPage = () => {
             [name]: value
         }));
     }
-
+    // call api 
     const onClickBtn = async () => {
         if (flag === 1) {
-            let result = await dispatch(loginUser(input));
+            let result = await dispatch(loginRedux(input));
             if (result.payload.code === 0) {
                 navigate("/");
-            } else {
-                setInput({
-                    username: '',
-                    password: '',
-                    confirmPassword: ''
-                });
             }
             toast(result.payload.message);
         } else {
             if (input.password === input.confirmPassword) {
-                let result = await dispatch(registerUser(input));
-                toast(result.payload.message);
+                let result = await dispatch(registerRedux(input));
                 if (result.payload.code === 0) {
                     navigate("/");
-                } else {
-                    setInput({
-                        username: '',
-                        password: '',
-                        confirmPassword: ''
-                    })
                 }
+                toast(result.payload.message);
             } else {
                 toast("Passwords do not match");
-                setInput({
-                    username: '',
-                    password: '',
-                    confirmPassword: ''
-                })
             }
         }
+        setInput({
+            username: '',
+            password: '',
+            confirmPassword: ''
+        });
     }
 
     return (
@@ -75,7 +66,7 @@ const LoginRegisterPage = () => {
                     <Link to="/"><FontAwesomeIcon icon={faArrowLeft}></FontAwesomeIcon></Link>
                 </div>
                 <div className="right">
-                    <div className="d-flex justify-content-center mb-1"><img alt="" className="login-logo" src={Logo} /></div>
+                    <div className="d-flex justify-content-center mb-1 mt-3"><img alt="" className="login-logo" src={Logo} /></div>
                     <div className="tabs">
                         <ul>
                             <li className={flag === 0 ? "login_li" : "login_li active"} onClick={() => setFlag(1)}>Login</li>

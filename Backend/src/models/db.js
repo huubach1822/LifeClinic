@@ -10,4 +10,6 @@ var db = initModels(sequelize);
 
 module.exports = db;
 
-//npx sequelize-auto -o "./src/models" -d datn_database -h localhost -u root -p 3306 -x 1234 -e mysql
+
+
+//npx sequelize-auto -o "./src/models" -d datn_database -h localhost -u root -p 3306 -x 1234 -e mysql --noAlias true 

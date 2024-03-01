@@ -74,9 +74,8 @@
             }
 
             .placeholder-text {
-                font-size: 16px;
-                font-family: Garamond, serif;
-                font-weight: 100;
+                font-size: 14px;
+                font-family: 'Times New Roman', serif;
                 color: #595C5F
             }
 
@@ -91,8 +90,8 @@
             }
 
             .MuiInputBase-root {
-                font-size: 16px;
-                font-family: Garamond, serif;
+                font-size: 15px;
+                font-family: 'Times New Roman', serif;
                 color: black;
             }
 
@@ -157,6 +156,45 @@
         .mf-s2-card:focus {
             border-color: #00B5F1;
         }
+
+        .mf-pagination {
+            color: white;
+
+            .MuiPaginationItem-page {
+                background: #fff;
+                color: #00b5f1;
+                border: 1px solid transparent;
+                box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+            }
+
+            .MuiPaginationItem-page:hover {
+                border-color: #00b5f1;
+            }
+
+            .Mui-selected {
+                background: linear-gradient(98.96deg, #00b5f1 40.75%, #00e0ff 129.57%);
+                color: white;
+                border: 1px solid transparent;
+            }
+
+            .MuiPaginationItem-previousNext {
+                background: #fff;
+                color: #00b5f1;
+                border: 1px solid transparent;
+                box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+            }
+
+            .MuiPaginationItem-previousNext:hover {
+                border-color: #00b5f1;
+            }
+
+            .MuiPaginationItem-ellipsis {
+                color: rgba(0, 0, 0, .25);
+                border: 1px solid transparent;
+            }
+
+        }
+
     }
 
     .mf-s2-sidecontent {
@@ -233,8 +271,25 @@
     }
 }
 
+.mf-section-3 {
+    background-color: #E8F2F7;
+    min-height: 500px;
+
+    .mf-s3-img {
+        width: 300px;
+        height: 300px;
+    }
+
+    .mf-s3-warning {
+        font-family: Roboto, sans-serif !important;
+        color: #ffb54a;
+        font-size: 25px;
+        font-weight: bold;
+    }
+}
+
 .css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root {
-    font-size: 14px !important;
-    font-family: Garamond, serif;
+    font-size: 15px !important;
+    font-family: 'Times New Roman', serif !important;
     color: black !important;
 }

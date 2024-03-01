@@ -15,10 +15,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    Email: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
     ID_account_type: {
       type: DataTypes.INTEGER,
       allowNull: true,

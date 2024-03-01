@@ -61,6 +61,10 @@ module.exports = function(sequelize, DataTypes) {
         model: 'degree',
         key: 'ID'
       }
+    },
+    Email: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,

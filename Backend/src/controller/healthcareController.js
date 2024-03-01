@@ -7,6 +7,13 @@ const getAllHealthcarePackage = async (req, res) => {
 
 }
 
+const getAllHealthcarePagination = async (req, res) => {
+    let result = await healthcareService.getAllHealthcarePagination(req.params.page, req.params.queryString, req.params.idCity);
+    return res.status(200).json(result)
+
+}
+
 module.exports = {
-    getAllHealthcarePackage: getAllHealthcarePackage
+    getAllHealthcarePackage: getAllHealthcarePackage,
+    getAllHealthcarePagination: getAllHealthcarePagination
 }

@@ -10,7 +10,6 @@ create table account (
 	ID int auto_increment primary key,
     Username TINYTEXT,
     Password TINYTEXT,
-    Email TINYTEXT,
     ID_account_type int,
     FOREIGN KEY (ID_account_type) REFERENCES account_type(ID)
 );
@@ -69,6 +68,7 @@ create table doctor (
     Price int,
     Avatar blob, -- img --
     Gender TINYTEXT,
+	Email TINYTEXT,
     ID_clinic int,
     ID_speciality int,
     ID_degree int,

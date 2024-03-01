@@ -1,32 +1,89 @@
 import "./HealthcarePackage.scss";
-import tempLogo from "./tempLogo.webp";
+import tempLogo from "../../asset/image/Healthcarepackage/tempLogo.webp";
 import { useEffect, useState } from 'react';
-import { faAngleRight, faSearch, faHospital, faBriefcaseMedical } from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight, faSearch, faKitMedical, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import { getAllHealthcare } from "../../service/healthcareService";
-import { Buffer } from 'buffer';
+import { getAllHealthcarePagination } from "../../service/healthcareService";
 import _ from 'lodash';
+import { getAllCity } from "../../service/cityService";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import EmptyList from "../../asset/image/EmptyList.webp"
+import CircularProgress from '@mui/material/CircularProgress';
+import Pagination from '@mui/material/Pagination';
 
 
 const MedicalFacility = () => {
 
+    // data
     const [healthcare, setHealthcare] = useState();
-    const [selectedHealthcare, setSelectedHealthcare] = useState();
+    const [city, setCity] = useState()
+    // pagination
+    const [totalPage, setTotalPage] = useState(1);
+    // loading
+    const [loading, setLoading] = useState(true);
+    // search and filter
+    const [queryObject, setQueryObject] = useState({
+        location: "",
+        queryString: "",
+        page: 1
+    });
+
+    // first render
+    useEffect(() => {
+        const fetchCity = async () => {
+            let res = await getAllCity()
+            setCity(res.data.city)
+        }
+        fetchCity()
+        let timerId = fetchData(queryObject)
+        return () => clearTimeout(timerId);
+        // eslint-disable-next-line
+    }, []);
 
     // call api
-    useEffect(() => {
-        const fetchData = async () => {
-            var res = await getAllHealthcare()
-            var temp = res.data.healthcarePackage
-            for (let x of temp) {
-                x.ID_clinic_clinic.Logo = Buffer.from(x.ID_clinic_clinic.Logo.data, 'binary').toString('base64');
-            }
-            setHealthcare(temp)
-            setSelectedHealthcare(temp[0])
+    const fetchData = async (obj) => {
+        setLoading(true);
+        var res = await getAllHealthcarePagination(obj.page, obj.queryString, obj.location);
+        setHealthcare(res.data.data.result);
+        setTotalPage(res.data.data.totalPages)
+        let timerId = setTimeout(() => {
+            setLoading(false)
+        }, 500);
+        return timerId
+    }
+
+    // search and filter change
+    const selectChange = (event) => {
+        setQueryObject({
+            ...queryObject,
+            location: event.target.value,
+            page: 1
+        })
+    };
+    const pageChange = (event, value) => {
+        if (value !== queryObject.page) {
+            setQueryObject({
+                ...queryObject,
+                page: value
+            })
         }
-        fetchData()
-    }, []);
+    };
+    const inputChange = (event) => {
+        setQueryObject({
+            ...queryObject,
+            queryString: event.target.value,
+            page: 1
+        })
+    }
+    useEffect(() => {
+        let timerId = fetchData(queryObject)
+        window.scrollTo(0, 0);
+        return () => clearTimeout(timerId);
+    }, [queryObject])
+
 
     return (
         <div>
@@ -34,58 +91,75 @@ const MedicalFacility = () => {
                 <div className="hc-s1-p1 mt-3">
                     <Link to="/" className="hc-s1-p1-hp me-2">Home Page</Link>
                     <FontAwesomeIcon icon={faAngleRight} />
-                    <span className="hc-s1-p1-hc ms-2">Healthcare Package</span>
+                    <span className="hc-s1-p1-doc ms-2">Healthcare Package</span>
                 </div>
                 <div className="hc-s1-p2 d-flex flex-column align-items-center pb-5">
                     <div className="hc-s1-p2-title">Healthcare Package</div>
-                    <div className="hc-s1-p2-description">Extensive health check-up packages at trusted medical institutions meet all the needs of the people.</div>
-                    <div className="form-group has-search mt-4 mb-4">
+                    <div className="hc-s1-p2-description">Diverse Health Check-up Packages at Reputable Medical Facilities to Meet All Public Needs.</div>
+                    <div className="form-group has-search mt-4 mb-4 d-flex flex-row">
                         <span className="form-control-feedback"><FontAwesomeIcon icon={faSearch} /></span>
-                        <input type="text" className="form-control" placeholder="Find a Healthcare Package" />
-                    </div>
-                </div>
-            </div>
-            <div className="hc-section-2">
-                <div className="hc-s2-container">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-7 mt-4">
-                                {healthcare?.map((item, index) => {
+                        <input onChange={inputChange} type="text" className="form-control" placeholder="Find a Healthcare Package" />
+                        <div className="search-line-icon"></div>
+                        <FormControl sx={{ width: "170px", height: "50px" }}>
+                            <Select
+                                value={queryObject.location}
+                                onChange={selectChange}
+                                displayEmpty
+                                inputProps={{ "aria-label": "Without label" }}
+                                renderValue={queryObject.location !== "" ? undefined : () => <span className="placeholder-text"><FontAwesomeIcon icon={faLocationDot} className="me-2" />Location</span>}
+                            >
+                                <MenuItem value={""}>All Location</MenuItem>
+                                {city?.map((item, index) => {
                                     return (
-                                        <div autofocus={index === 0 ? "true" : "false"} className="hc-s2-card d-flex mb-4 px-4 py-4" tabIndex={index} key={item.ID} onClick={() => setSelectedHealthcare(item)} >
-                                            <img alt="" className="hc-s2-img" src={tempLogo}></img>
-                                            <div className="flex-fill ms-3">
-                                                <div className="hc-s2-name">{item.Name}</div>
-                                                <div className="hc-s2-address"><FontAwesomeIcon icon={faHospital} className="me-1" /> {item.ID_clinic_clinic.Name}</div>
-                                                <div className="hc-s2-address"><FontAwesomeIcon icon={faBriefcaseMedical} className="me-1" /> {item.ID_healthcare_type_healthcare_type.Name}</div>
-                                                <div className="d-flex justify-content-between align-items-center">
-                                                    <div className="hc-s2-price">Price: <span>{item.Price} VND</span></div>
-                                                    <button type="button" className="hc-s2-button btn">Book now</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
+                                        <MenuItem key={item.ID} value={item.ID}>{item.Name}</MenuItem>
                                     )
                                 })}
-                            </div>
-                            <div className="col-5 mt-4 ">
-                                {!_.isEmpty(selectedHealthcare) &&
-                                    <>
-                                        <div className="hc-s2-sidecontent p-4">
-                                            <img alt="" className="hc-s2-sc-img mb-4" src={`data:image/*;base64,${selectedHealthcare.ID_clinic_clinic.Logo}`}></img>
-                                            <div className="hc-s2-sc-name">{selectedHealthcare.Name}</div>
-                                            <div className="hc-s2-sc-address">{selectedHealthcare.ID_clinic_clinic.Name}</div>
-                                            <div className="hc-s2-sc-address mb-3">{selectedHealthcare.ID_clinic_clinic.Address}</div>
-                                            <div className="hc-s2-sc-address temp-description pt-2">{selectedHealthcare.Description}</div>
-                                        </div>
-                                    </>
-                                }
-                            </div>
-                        </div>
+                            </Select>
+                        </FormControl>
                     </div>
                 </div>
             </div>
-        </div>
+            <div className="hc-section-2" style={!_.isEmpty(healthcare) && !loading ? { display: "block" } : { display: "none" }}>
+                <div className="hc-s2-container d-flex flex-column">
+                    <div className="row">
+                        {healthcare?.map((item, index) => {
+                            return (
+                                <div className="col-6 mt-4" key={item.ID}>
+                                    <div className="hc-s2-card d-flex mb-3 px-4 py-4">
+                                        <img alt="" className="hc-s2-img" src={tempLogo}></img>
+                                        <div className="flex-fill d-flex flex-column ms-3">
+                                            <div className="hc-s2-name">{item.Name}</div>
+                                            <div className="hc-s2-address"><FontAwesomeIcon icon={faLocationDot} className="me-1" /> {item.clinic.Name}</div>
+                                            <div className="hc-s2-address"><FontAwesomeIcon icon={faKitMedical} className="me-1" /> {item.healthcare_type.Name}</div>
+                                            <div className="hc-s2-end d-flex justify-content-between align-items-center">
+                                                <div className="hc-s2-price">Price: <span>{item.Price} VND</span></div>
+                                                <Link to={`/doctorDetail/${item.ID}`} type="button" className="hc-s2-button btn">Book now</Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    <div className="hc-pagination d-flex justify-content-center pb-3">
+                        <Pagination count={totalPage} page={queryObject.page} siblingCount={2} variant="outlined" shape="rounded" onChange={pageChange} />
+                    </div>
+                </div>
+            </div>
+            {_.isEmpty(healthcare) && !loading &&
+                <>
+                    <div className="hc-section-3 d-flex justify-content-center flex-column align-items-center py-5">
+                        <div className="hc-s3-warning mb-4">We couldn’t find what you were looking for</div>
+                        <img className="hc-s3-img" alt="" src={EmptyList}></img>
+                    </div>
+                </>
+            }
+            {loading &&
+                <div className="hc-section-3 d-flex justify-content-center py-5">
+                    <CircularProgress />
+                </div>
+            }
+        </div >
     )
 }
 

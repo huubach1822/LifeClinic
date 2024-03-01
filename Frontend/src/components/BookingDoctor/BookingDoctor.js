@@ -1,10 +1,10 @@
-import "./BookingPage.scss";
-import { faVenusMars, faBriefcaseMedical, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+import "./BookingDoctor.scss";
+import { faVenusMars, faHospital, faCalendarDays, faGraduationCap, faStethoscope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import tempLogo from "../Doctor/tempDoctor.webp"
+import tempLogo from "../../asset/image/Doctor/tempDoctor.webp"
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
@@ -13,28 +13,34 @@ import { useSelector } from 'react-redux'
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-var _ = require('lodash');
+import _ from 'lodash';
+import { getDoctorDetail } from "../../service/doctorService";
+import { Buffer } from "buffer";
 
-const BookingPage = () => {
+const BookingDoctor = () => {
 
+    // react route
     const navigate = useNavigate();
+    // data
     const account = useSelector(state => state.user.account)
     const [doctorDetail, setDoctor] = useState()
     const [timeSchedule, setTimeSchedule] = useState({})
     const [startDate, setStartDate] = useState(new Date());
-
+    // param from url
     let { id } = useParams();
+
+    // call api
     useEffect(() => {
-
         const getData = async () => {
-            const response = await axios.get(`http://localhost:8080/getDoctorDetail/${id}`)
-            setDoctor(response.data.doctorDetail)
-
+            const res = await getDoctorDetail(id)
+            res.data.doctorDetail.Avatar = Buffer.from(res.data.doctorDetail.Avatar.data, 'binary').toString('base64');
+            setDoctor(res.data.doctorDetail)
         };
         getData();
-
+        // eslint-disable-next-line
     }, []);
 
+    // get time when select change
     const handleChange = (e) => {
         if (e.target.value === "0") {
             setTimeSchedule({})
@@ -45,21 +51,24 @@ const BookingPage = () => {
         }
     }
 
+    // check time type
     const checkAvaliable = (id) => {
-        if (timeSchedule.filter(e => e.ID_time_type_time_type.ID === id).length > 0) {
-            /* vendors contains the element we're looking for */
+        if (timeSchedule.filter(e => e.time_type.ID === id).length > 0) {
             return false
         }
         return true
     }
 
-    const [selectedSchedule, setSchedule] = useState();
 
+
+
+
+    const [selectedSchedule, setSchedule] = useState();
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = (id) => {
         setShow(true);
-        let obj = timeSchedule.find(x => x.ID_time_type_time_type.ID === id)
+        let obj = timeSchedule.find(x => x.time_type.ID === id)
         setSchedule(obj.ID)
     }
     const onFormSubmit = e => {
@@ -87,12 +96,13 @@ const BookingPage = () => {
             {
                 !_.isEmpty(doctorDetail) && <>
                     <div className="bp-s1 d-flex">
-                        <img alt="" src={tempLogo}></img>
+                        <img alt="" src={`data:image/*;base64,${doctorDetail.Avatar}`}></img>
                         <div className="bp-doc-detail ms-4">
                             <div className="bp-doc-name">{doctorDetail.Name}</div>
-                            <div className="bp-doc-gender mt-1"><FontAwesomeIcon icon={faVenusMars} className="me-1" />{doctorDetail.Gender}</div>
-                            <div className="bp-doc-spe mt-1"><FontAwesomeIcon icon={faBriefcaseMedical} className="me-1" />{doctorDetail.ID_speciality_speciality.Name}</div>
-                            <div className="bp-doc-des mt-3">{doctorDetail.Description}</div>
+                            <div className="bp-doc-gender mt-4"><FontAwesomeIcon icon={faVenusMars} className="me-1" />{doctorDetail.Gender}</div>
+                            <div className="bp-doc-spe mt-1"><FontAwesomeIcon icon={faStethoscope} className="me-1" />{doctorDetail.speciality.Name}</div>
+                            <div className="bp-doc-gender mt-1"><FontAwesomeIcon icon={faGraduationCap} className="me-1" />{doctorDetail.degree.Name}</div>
+                            {/* <div className="bp-doc-des mt-3">{doctorDetail.Description}</div> */}
                         </div>
                     </div>
                     <div className="bp-s2 d-flex mt-5">
@@ -124,9 +134,9 @@ const BookingPage = () => {
                             }
                         </div>
                         <div className="bp-s2-p2">
-                            <div className="bp-s2-p2-title">Hospital Location</div>
-                            <div>{doctorDetail.ID_clinic_clinic.Name}</div>
-                            <div>{doctorDetail.ID_clinic_clinic.Address}</div>
+                            <div className="bp-s2-p2-title"><FontAwesomeIcon icon={faHospital} className="me-1" />Hospital Location</div>
+                            <div>{doctorDetail.clinic.Name}</div>
+                            <div>{doctorDetail.clinic.Address}</div>
                             <div className="bp-s2-p2-price mt-3">Price: <span>{doctorDetail.Price} VND</span></div>
                         </div>
                     </div>
@@ -199,4 +209,4 @@ const BookingPage = () => {
     )
 }
 
-export default BookingPage
+export default BookingDoctor

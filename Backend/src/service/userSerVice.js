@@ -1,30 +1,31 @@
 import db from "../models/db";
 var _ = require('lodash');
+const { Op } = require("sequelize");
 
 const register = async (account) => {
     try {
-        let temp = await db.account.findAll({
+        let temp = await db.account.findOne({
             where: {
                 Username: account.username
             }
         });
 
         if (!_.isEmpty(temp)) {
-            return { message: "user already exist", code: 1 };
+            return { message: "Username already exists", code: 1 };
         } else {
             var tempacc = await db.account.create({ Username: account.username, Password: account.password, ID_account_type: 1 });
         }
     } catch (error) {
         console.log(error)
-        return { message: "error", code: 1 }
+        return { message: "Something went wrong", code: 1 }
     }
 
-    return { message: "sucess", code: 0, account: tempacc[0] }
+    return { message: "Sucess", code: 0, account: tempacc }
 }
 
 const login = async (account) => {
     try {
-        var temp = await db.account.findAll({
+        var temp = await db.account.findOne({
             where: {
                 Username: account.username,
                 Password: account.password
@@ -32,18 +33,36 @@ const login = async (account) => {
         });
     } catch (error) {
         console.log(error)
-        return { message: "error", code: 1 }
+        return { message: "Something went wrong", code: 1 }
     }
 
     if (!_.isEmpty(temp)) {
-        return { message: "success", code: 0, account: temp[0] };
+        return { message: "Success", code: 0, account: temp };
     } else {
-        return { message: "wrong username or password", code: 1 };
+        return { message: "Wrong username or password", code: 1 };
     }
 }
 
+const changePassword = async (account) => {
+
+    try {
+        var acc = await db.account.findOne({ where: { ID: account.id, Password: account.oldPassword } });
+        if (_.isEmpty(acc)) {
+            return { message: "Wrong old password", code: 1 };
+        } else {
+            acc.Password = account.newPassword;
+            await acc.save({ fields: ["Password"] });
+        }
+    } catch (error) {
+        console.log(error)
+        return { message: "Something went wrong", code: 1 }
+    }
+
+    return { message: "Sucess", code: 0, account: acc };
+}
 
 module.exports = {
     register: register,
-    login: login
+    login: login,
+    changePassword: changePassword
 }

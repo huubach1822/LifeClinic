@@ -8,7 +8,12 @@ const registerUser = async (user) => {
     return await axios.post("http://localhost:8080/register", user);
 }
 
+const changePassword = async (user) => {
+    return await axios.post("http://localhost:8080/changePassword", user);
+}
+
 export {
     loginUser,
-    registerUser
+    registerUser,
+    changePassword
 }

@@ -13,7 +13,7 @@
   .right {
     width: 50%;
     height: 100%;
-    padding: 30px;
+    padding: 15px 30px;
   }
 
   .left {
@@ -36,7 +36,7 @@
     background: #fff;
 
     .login-logo {
-      width: 120px;
+      width: 145px;
       cursor: pointer;
     }
 
@@ -78,17 +78,18 @@
     }
 
     button {
-      margin-top: 20px;
       background: #00B5F1;
       padding: 10px;
       text-align: center;
-      letter-spacing: 1px;
       font-weight: bold;
       border-color: transparent;
       color: #fff;
       position: absolute;
-      bottom: 30px;
+      bottom: 19px;
       width: 290px;
+      font-size: 16px;
+      font-family: 'Times New Roman', serif;
+      // border-radius: 40px;
 
       &:active,
       &:hover {
